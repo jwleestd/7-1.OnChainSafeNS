@@ -1,4 +1,4 @@
-# AI-ruleset-sample
+# 7-1. OnChainSafeNS
 
 본 리포지토리는 최신 AI 코딩 어시스턴트들의 통합 환경(Harness) 설정과 운영을 위한 모범 사례(Best Practices) 및 스킬(Skills) 구성을 제공합니다.
 각 도구의 특성에 맞춘 통합 하네스(Harness) 가이드 문서를 아래에서 확인할 수 있습니다.

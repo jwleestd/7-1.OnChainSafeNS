@@ -5,67 +5,95 @@ This is the cross-tool global rules file (AGENTS.md) supported by Google Antigra
 ## Code Style
 
 - Maintain clean, readable, and well-documented code.
+- Use TypeScript strict mode. Avoid `any` type.
+- Follow ESLint + Prettier conventions.
 
 ---
 
-## 🏗️ 001. Project Overview [아래 내용은 템플릿, 프로젝트에 맞게 항상 수정할 것]
+## 🏗️ 001. Project Overview
 
-**Vision:** Transform the complex business planning process into a data-driven decision-making journey that reduces failure rates. Act as an intelligent partner to help founders quickly pass funding gates (government grants, loans) and focus on sustainable growth.
+**Product Name:** 온체인 사기 방지 플랫폼 (On-Chain Fraud Shield Platform)
 
-**Core Features:**
+**Vision:** 수만 건의 오송금 민원과 오탐지를 해결하고, 사람이 읽을 수 있는 이름 기반 안전 거래와 실시간 사기 주소 필터링을 보장하는 온체인 사기 방지 플랫폼
 
-- Submission Wizard: Step-by-step guide for government/bank forms (100% template compatibility).
-- Financial Auto-Engine: Generates 3-year P&L and cash flow from key variables.
-- AI Drafting: Context-aware writing assistance with Easy/Expert modes.
-- PMF Diagnostic: Analyzes product-market fit and risks based on standard frameworks.
-- Docs Export: One-click HWP/PDF export fully compliant with submission standards.
+**Phase-0 (Actionable MVP) Core Features:**
 
-**Project Goals & Success Metrics:**
+- P0-1: 사기 주소 조회 — 주소+체인 입력 → 사기 DB 매칭·위험 등급 조회
+- P0-2: 사기 주소 신고 — 이메일 인증 유저의 주소·피해내역 제출 → 운영자 승인
+- P0-3: Safe-Name 등록 — 이름(.safe) + 지갑주소 + 체인 → 오프체인 등록
+- P0-4: Safe-Name 리졸브 — 이름 → 매핑 주소 반환 + 사기 DB 교차 검증
+- P0-5: 운영자 승인 대시보드 — 대기 신고 목록 조회·승인/거부
+- P0-6: 데모 이체 시뮬레이션 — 이름+금액 → 사기 검증 → 완료/차단 → Email 통지
 
-- Pass Funding Gates (Maximized acceptance rate > 65%).
-- TTV < 30 mins to first "submit-ready" draft.
-- Security First & Failure Avoidance.
+**Target Audience:**
+
+- Primary: 일반 유저(C2) — 사기 조회, Safe-Name 등록·리졸브, 신고
+- Secondary: 운영자(O1) — 신고 승인, 시스템 관리
+
+**Phase-0 Goals & Success Metrics:**
+
+- 19개 REQ E2E 수동 테스트 100% Pass
+- 월 비용 ≤ $22 (Vercel + Supabase + Resend + 도메인)
+- 유저 피드백 10건+, 치명 블로커 0건
+- 데모 이체 시뮬레이션 이해도 ≥ 90%
 
 ---
 
 ## 🛠️ 002. Technical Stack
 
-**Backend Core (Spring Boot):**
+**Fullstack (Next.js — 단일 풀스택 모노리스):**
 
-- Language: Java 21 (LTS)
-- Framework: Spring Boot 4.0.0
-- Build Tool: Gradle (Kotlin DSL recommended)
-- Database: MySQL 8.x (InnoDB, utf8mb4)
-- ORM: Spring Data JPA (Hibernate)
+- Language: TypeScript (strict mode)
+- Framework: Next.js 15 App Router
+- ORM: Prisma
+- Database: Supabase PostgreSQL (로컬·배포 단일 환경)
+- UI: Tailwind CSS + shadcn/ui
+- Email: Resend API
+- Deploy: Vercel (Git Push 자동 배포)
 
-**AI & Document Engine (Python):**
+**Phase-0 미사용 (향후 Phase):**
 
-- Language: Python 3.10+
-- Framework: FastAPI
-- AI Orchestration: LangChain
-- LLM Provider: Google Gemini (via Internal Gateway)
+- AI/LLM: Vercel AI SDK + Google Gemini (Phase-3)
+- Blockchain: ethers.js + Solidity (Phase-2+)
+- KYC: 외부 KYC Provider (Phase-2)
 
 **Infrastructure:**
 
-- Docker, Swagger/OpenAPI 3.0, Git
+- Version Control: Git + GitHub
+- CI/CD: Vercel 자동 배포 (별도 CI 설정 불요)
+- Testing: Phase-0은 수동 테스트 체크리스트, Phase-1a+ Playwright E2E
 
 ---
 
 ## 📋 003. Development Guidelines
 
-**Technology Constraints (C-TEC):**
+**Phase-0 설계 원칙:**
 
-- Frontend: Vite + React + TypeScript (SPA)
-- Architecture: Micro-Service Ready (Core API and AI Engine communicate via REST)
+| # | 원칙 | 설명 |
+|---|---|---|
+| P1 | 항상 Simulation | `if (simulationMode)` 분기 금지. 모든 코드가 시뮬레이션 전제 |
+| P2 | 외부 연동 최소화 | Mock 모듈 구현 금지. 시드 데이터(정적)로 대체 |
+| P3 | 단일 인증 | Admin PW + 이메일 인증만. JWT/RBAC 없음 |
+| P4 | 단일 알림 | Email(Resend) 단일. Slack/KakaoTalk/SMS는 Phase-1+ |
+| P5 | CRUD 중심 | Strategy/Adapter 패턴 없음. 직선적 CRUD |
+| P6 | 바이브코딩 호환 | Route Handler 내에서 직접 Prisma 호출 허용(2계층). 공통 로직만 `lib/` 분리 |
+| P7 | 단일 DB 환경 | 로컬·배포 모두 Supabase PostgreSQL 단일 사용 |
 
-**Performance Standards:**
+**Architecture (2계층):**
 
-- Wizard Latency: Step transitions < 800ms (p95)
-- Doc Generation: Full draft creation < 10s (p95)
+- Route Handler (`app/api/v1/**/route.ts`) → Prisma 직접 호출
+- Shared Utilities (`lib/*.ts`) → 2개+ Route Handler에서 반복되는 로직만 분리
+- Phase-1a에서 100줄 초과 또는 3개+ 반복 시 `lib/services/`로 추출
+
+**Performance Standards (Phase-0 NFR):**
+
+- 사기 조회 응답: p95 ≤ 2,000ms
+- 리졸브 응답: p95 ≤ 500ms
+- 등록 응답: p95 ≤ 3,000ms
+- 가용성: ≥ 99.0%
 
 **Development Priorities:**
 
-1. Accuracy: Financial engine logic must be flawless.
-2. Compliance: Output formats (HWP/PDF) must match government templates 100%.
-3. User Safety: Prevent data loss via aggressive Auto-save (<10s).
-
+1. Accuracy: 사기 DB 매칭·Safe-Name 리졸브 로직 정확성 최우선.
+2. Simplicity: CRUD 중심, 2계층, 최소 의존성.
+3. User Safety: 이메일 인증 기반 신고, Admin 인증 승인.

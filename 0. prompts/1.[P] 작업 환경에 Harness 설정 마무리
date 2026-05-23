@@ -1,0 +1,30 @@
+1) 작업 환경에 Harness 설정 마무리하기
+
+본 프로젝트는 
+@docs/0.PRD_v1_opus46_fn.md 제품에 대한 
+@docs/0.SRS_v1opus46_fn.md 문서로 정의된 개발 프로젝트에 대해
+MVP 개발을 하기 위해 만들어진 프로젝트이다. 
+
+지금부터 @rules 경로에 있는 기존 규칙들 중
+MVP 개발에 맞추어지지 않은 규칙들이 있으면 수정해주고, 
+전체적인 rule 이 현재 정의된 MVP 개발을 위해서
+부족한 점이 있다면 확인해서 삭제, 수정, 추가 방안을 구체적으로 제안해줘.
+
+
+지금부터 @Implementation plan에 따라 @rules 경로에 있는 기존 규칙들 중 MVP 개발에 맞추어지지 않은 규칙들이 있으면 수정해줘.
+
+
+
+2) 추가 프롬프팅으로 룰 정교화 + Skill 설정까지 진행!
+
+
+@docs/0.PRD_v1_opus46_fn.md @docs/0.SRS_v1opus46_fn.md
+잘 정립된 개발 목표인 위 문서들을 기반으로 현재 프로젝트의 전체 규칙 즉 AI harness를 완전히 처음부터 재정립하고 싶어.
+---
+@.agents @.claude @.cursor @.gemini @AGENTS.md @CLAUDE.md 
+샘플로 규칙이 정의된 위 폴더와 파일들에 대해서 전체적으로 현재 Harness 현황을 검토하고, 프로젝트 개발에 본격적으로 돌입할 수 있는 완성본으로 수정해야 해.
+---
+@README-claude-harness.md @README-common-harness.md @README-cursor-harness.md @README-gemini-harness.md 
+가이드 문서들을 참조해서 각 솔루션의 Harness 설정규칙에 맞추어서 완성도 있는 프로젝트 진행 체계를 갖춰줘.
+---
+

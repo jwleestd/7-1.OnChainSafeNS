@@ -1,0 +1,46 @@
+---
+description: Universal project principles for On-Chain Fraud Shield Platform (Phase-0 MVP)
+globs: ["**/*"]
+alwaysApply: true
+---
+# META RULES: ON-CHAIN FRAUD SHIELD PLATFORM
+
+## 1. Project Identity
+- **Product:** 온체인 사기 방지 플랫폼 (On-Chain Fraud Shield Platform)
+- **Phase:** Phase-0 Actionable MVP
+- **Architecture:** 단일 풀스택 모노리스 (Next.js App Router, 2계층)
+
+## 2. Development Philosophy
+- **Simulation-First:** 모든 코드가 시뮬레이션 전제. `if (simulationMode)` 분기 금지.
+- **CRUD-Driven:** Strategy/Adapter 패턴 없음. 직선적 CRUD 구현.
+- **Vibe-Coding Compatible:** AI가 단일 파일 내에서 코드를 완성할 수 있도록 구조화.
+
+## 3. Problem-Solving Methodology
+- Define problems clearly before attempting solutions.
+- Analyze context and scope thoroughly.
+- 7단계 구조화 에러 진단 프로세스 적용.
+
+## 4. Quality Assurance
+- **Accuracy First:** 사기 DB 매칭·Safe-Name 리졸브 로직 정확성 최우선.
+- **Performance:** 사기 조회 p95 ≤ 2,000ms, 리졸브 p95 ≤ 500ms.
+- **Cost:** 월 비용 ≤ $22 (Vercel + Supabase + Resend + 도메인).
+
+## 5. Collaboration and Communication
+- Clear documentation of decisions and changes.
+- Conventional Commits format. Atomic commits.
+- Version control best practices.
+
+## 6. Technical Stack Adherence
+- **MUST USE:** Next.js 15, TypeScript strict, Prisma, Supabase PostgreSQL, Tailwind CSS + shadcn/ui, Resend, Vercel.
+- **MUST NOT USE:** Java, Spring Boot, Python, FastAPI, MySQL, SQLite, Docker, Redis, Kafka, OAuth2, JWT.
+
+## 7. Phase-0 Constraints
+- Admin PW + 이메일 인증만 (JWT/RBAC 없음).
+- Email(Resend) 단일 알림 채널.
+- Rate Limit 미구현 (Vercel 내장 DDoS).
+- Playwright 미사용 (수동 테스트 체크리스트).
+- Route Handler에서 직접 Prisma 호출 (Service 분리 불요).
+
+## See also:
+- [001-project-overview.mdc](001-project-overview.mdc) for detailed features
+- [003-development-guidelines.mdc](003-development-guidelines.mdc) for architecture

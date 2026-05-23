@@ -1,0 +1,110 @@
+# AI Harness 전체 재정립 — Walkthrough
+
+## 작업 개요
+
+PRD v0.5 / SRS v0.8 기반으로 4대 AI 도구의 Harness를 **처음부터 재정립**하여 개발 준비 완료 상태로 구축했습니다.
+
+---
+
+## 최종 Harness 구조
+
+```
+📁 프로젝트 루트
+├── AGENTS.md                    ← 글로벌 규칙 (전 도구 공유)
+├── CLAUDE.md                    ← Claude Code 전용 컨텍스트
+│
+├── .agents/                     ← Antigravity 전용
+│   ├── rules/                   ← 5개 규칙 파일
+│   │   ├── 001-project-overview.md
+│   │   ├── 002-tech-stack.md
+│   │   ├── 003-development-guidelines.md
+│   │   ├── 004-phase0-constraints.md    ★ NEW
+│   │   └── 005-data-model.md            ★ NEW
+│   ├── skills/                  ← 4개 MVP 스킬 (= .cursor/skills 미러)
+│   │   ├── error-fixing/SKILL.md        ★ NEW
+│   │   ├── build-and-setup/SKILL.md     ★ NEW
+│   │   ├── git-commit-pr/SKILL.md       ★ NEW
+│   │   └── generate-tasks-from-srs/SKILL.md  ★ NEW
+│   └── workflows/               ← 2개 워크플로우
+│       ├── generate-tasks-from-srs.md   ✏️ UPDATED
+│       └── generate-agent-rule.md       ✏️ UPDATED
+│
+├── .cursor/                     ← Cursor 전용
+│   ├── rules/                   ← 18개 규칙 파일
+│   │   ├── 000-meta-rule-script.mdc     ✏️ UPDATED
+│   │   ├── 001~003 (Core)               ✏️ UPDATED
+│   │   ├── 010~012 (Meta)               ✅ 유지
+│   │   ├── 100~102 (Workflow)           ✏️ 101 UPDATED
+│   │   ├── 200~202 (Pattern)            ✅ 유지
+│   │   └── 300~304 (Tech-specific)      ★ NEW (4개)
+│   ├── skills/                  ← 4개 MVP 스킬
+│   │   └── (error-fixing, build-and-setup, git-commit-pr, generate-tasks-from-srs)
+│   └── agents/
+│       └── document-updater.md          ✏️ UPDATED
+│
+├── .claude/                     ← Claude Code 전용
+│   └── agents/
+│       └── nextjs-fullstack.md          ★ NEW
+│
+└── .gemini/                     ← Gemini CLI 전용
+    └── agents/
+        └── readme-architect.md          ✏️ UPDATED
+```
+
+---
+
+## 변경 통계
+
+| 조치 | 수량 | 대상 |
+|---|---|---|
+| 🔴 **삭제** | 34개 | 이전 프로젝트 스킬 21, 에이전트 8, commands 5 |
+| ✏️ **수정** | 7개 | 000-meta-rule, document-updater, readme-architect, 2 workflows, AGENTS.md, CLAUDE.md |
+| ★ **신규** | 10개 | Skills 4, Agents 1, Rules 6 (.agents 2 + .cursor 4) |
+| ✅ **유지** | 8개 | 범용 규칙 (Git, 에러진단, 문서 관행) |
+
+---
+
+## Phase별 작업 내역
+
+### Phase A: 레거시 정리
+- `.cursor/skills/` — Java/Spring/Kafka/MySQL/Flutter 스킬 **21개 폴더 전량 삭제**
+- `.claude/agents/` — java-spring, gradle, kafka 등 에이전트 **8개 전량 삭제**
+- `.claude/commands/`, `.cursor/commands/` — 레거시 폴더 **삭제** (Skills로 통합)
+
+### Phase B: 공통 규칙 수정
+- `000-meta-rule-script.mdc` — "Financial Engine, Java/Spring, AES-256" → "온체인 사기 방지, Next.js 2계층, Simulation-First"
+
+### Phase C: MVP Skills 생성 (4개)
+| Skill | 내용 |
+|---|---|
+| `error-fixing` | Next.js/Prisma/Supabase/Resend 특화 7단계 에러 진단 |
+| `build-and-setup` | Phase-0 프로젝트 초기 설정 8단계 절차 |
+| `git-commit-pr` | Conventional Commits + Phase-0 Scope + PR 체크리스트 |
+| `generate-tasks-from-srs` | SRS → Task 추출 6단계 + Phase-0 REQ-API 매핑 |
+
+### Phase D: MVP Agents 정비 (3개)
+| Agent | 도구 | 변경 |
+|---|---|---|
+| `document-updater` | Cursor | Spring Boot → Next.js/Prisma 컨텍스트로 수정 |
+| `nextjs-fullstack` | Claude Code | **신규** — 2계층 아키텍처 전문 서브에이전트 |
+| `readme-architect` | Gemini CLI | 프로젝트명·기술 스택·설치 절차 반영 |
+
+### Phase E: Workflows 정비 (2개)
+| Workflow | 변경 |
+|---|---|
+| `generate-tasks-from-srs` | 예시를 전량 Phase-0 REQ(사기 조회, 데모 이체 등)으로 교체 |
+| `generate-agent-rule` | 기술 스택 참조를 MVP로 업데이트, Cursor 호환 단계 추가 |
+
+---
+
+## 검증 결과
+
+| 항목 | 상태 |
+|---|---|
+| `.agents/` — rules 5, skills 4, workflows 2 | ✅ |
+| `.cursor/` — rules 18, skills 4, agents 1 | ✅ |
+| `.claude/` — agents 1 (nextjs-fullstack) | ✅ |
+| `.gemini/` — agents 1 (readme-architect) | ✅ |
+| 레거시 commands/ 폴더 | ✅ 삭제 완료 |
+| Java/Spring/Kafka/MySQL 참조 | ✅ 전량 제거 |
+| Next.js/Prisma/Supabase/shadcn 참조 | ✅ 전량 반영 |

@@ -1,0 +1,60 @@
+---
+description: Phase-0 API endpoint specifications and constraints
+globs: "app/api/**/*.ts"
+alwaysApply: false
+---
+# Phase-0 API Rules (7 Endpoints)
+
+## Endpoint Specifications
+
+### P0-A1: 사기 주소 조회
+- `GET /api/v1/fraud/lookup?address=...&chain=...`
+- 인증: Public
+- 응답: risk_level, report_count, source_type
+- NFR: p95 ≤ 2,000ms
+
+### P0-A2: 사기 주소 신고
+- `POST /api/v1/fraud/report`
+- 인증: Email인증 (email_verified=true 확인)
+- Body: { address, chain, description(10자+), evidence_url }
+- 응답: report_id (UUID)
+- 부수효과: Email 접수 확인 발송
+
+### P0-A3: Safe-Name 리졸브
+- `GET /api/v1/resolve?name=...`
+- 인증: Public
+- 응답: { name, address, chain, fraud_status }
+- NFR: p95 ≤ 500ms
+
+### P0-A4: Safe-Name 등록
+- `POST /api/v1/safename/register`
+- 인증: Email인증
+- Body: { human_name, wallet_address, chain }
+- 이름 규칙: 영소문자·숫자·하이픈, 3~20자, 중복·예약어 거부
+
+### P0-A5: 운영자 신고 승인
+- `POST /api/v1/admin/approve`
+- 인증: Admin PW
+- Body: { report_id, action('approve'|'reject'), reviewer_notes? }
+- 승인 시: FRAUD_ADDRESS 자동 생성/업데이트
+
+### P0-A6: 이메일 인증
+- `POST /api/v1/auth/verify-email`
+- 인증: Public
+- Body: { email, code? }
+- code 없으면: 코드 발송 (6자리, 10분 유효)
+- code 있으면: 검증 → USER 생성/갱신
+
+### P0-A7: 데모 이체 시뮬레이션
+- `POST /api/v1/transfer/demo`
+- 인증: Email인증
+- Body: { recipient_name, amount }
+- 로직: 리졸브 → 사기검증 → DB 저장 → Email 통지
+
+## Auth Guard
+- Email인증 필요 API: Route Handler 내부에서 DB 조회 (email_verified 확인)
+- Admin 필요 API: middleware.ts에서 가드 (admin_session 쿠키/x-admin-token 헤더)
+
+## Rate Limit
+- Phase-0: 구현하지 않음 (Vercel 내장 DDoS 보호 위임)
+- Phase-1a 목표치: lookup 100/min, report 10/day, register 5/day

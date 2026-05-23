@@ -1,0 +1,38 @@
+---
+description: Phase-0 build process, environment variables, and dev server setup
+alwaysApply: false
+---
+# BUILD & ENVIRONMENT SETUP (Phase-0)
+
+## Dev Server
+```bash
+npm run dev          # Next.js 개발 서버 (http://localhost:3000)
+```
+
+## Database Setup
+```bash
+npx prisma generate       # Prisma Client 생성
+npx prisma db push         # DB 스키마 동기화 (Supabase)
+npx prisma db seed         # 시드 데이터 삽입 (30+10+5+1건)
+npx prisma studio          # DB 브라우저 (선택)
+```
+
+## shadcn/ui Component 추가
+```bash
+npx shadcn@latest add button input card badge alert table dialog toast tabs
+```
+
+## ENV VARIABLES (.env.local)
+```env
+DATABASE_URL="postgresql://postgres.[ref]:[pw]@pooler.supabase.com:6543/postgres?pgbouncer=true"
+DIRECT_URL="postgresql://postgres.[ref]:[pw]@pooler.supabase.com:5432/postgres"
+RESEND_API_KEY="re_test_xxxxx"
+ADMIN_PASSWORD="dev-admin-pw-2026"
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+FROM_EMAIL="noreply@fraud-shield.com"
+```
+
+## FILE STRUCTURE
+```
+tree -L 4 -a -I 'node_modules|.git|.next|__pycache__|.DS_Store'
+```

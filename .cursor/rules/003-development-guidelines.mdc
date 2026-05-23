@@ -1,21 +1,25 @@
 ---
-description: 
+description: Phase-0 development guidelines — 2-tier architecture, project structure
 globs: 
 alwaysApply: true
 ---
-# Development Guidelines
+# Development Guidelines (Phase-0 MVP)
 
-## Version Control
-- System: Git
-- Repository Management: GitHub APIs
+## Architecture (2계층 — 바이브코딩 호환)
+- Route Handler (`app/api/v1/**/route.ts`): HTTP + 비즈니스 로직 + Prisma 직접
+- Shared Utilities (`lib/*.ts`): email.ts, prisma.ts, validators.ts, constants.ts
+- 100줄 초과 또는 3개+ 반복 시 `lib/services/`로 추출 (Phase-1a)
 
-## Development Priorities
-1. Utilize listed tech stack components ([002-tech-stack.mdc](002-tech-stack.mdc))
-2. Prefer frameworks with robust documentation and community support
-3. Implement proven design patterns and best practices
+## Key Directories
+- `app/(public)/` — 공개 페이지 (fraud-lookup, safe-name)
+- `app/(admin)/` — Admin 보호 페이지 (approval)
+- `app/api/v1/` — Route Handlers (7개 엔드포인트)
+- `lib/` — 공유 유틸리티 (4개 파일)
+- `prisma/` — schema.prisma + seed.ts
+- `components/ui/` — shadcn/ui 컴포넌트
 
-## Architecture Principles
-- Modular design for easy maintenance
-- Scalable infrastructure
-- Secure data handling
-- Performance optimization
+## Performance (Phase-0 NFR)
+- 사기 조회: p95 ≤ 2,000ms
+- 리졸브: p95 ≤ 500ms
+- 가용성: ≥ 99.0%
+- 월 비용: ≤ $22

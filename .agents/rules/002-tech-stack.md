@@ -1,32 +1,34 @@
 ---
-description: Project technical stack definition (Backend Focus)
+description: Phase-0 MVP technical stack — Next.js fullstack monolith
 alwaysApply: true
 ---
-# Technical Stack
+# Technical Stack (Phase-0 MVP)
 
-## Backend Core (Spring Boot)
-- Language: Java 21 (LTS)
-- Framework: Spring Boot 4.0.0
-- Build Tool: Gradle (Kotlin DSL recommended)
-- Database: MySQL 8.x (InnoDB, utf8mb4)
-- ORM: Spring Data JPA (Hibernate)
-- Testing: JUnit 5, Mockito, AssertJ
+## Fullstack (Next.js 단일 풀스택 모노리스)
+- Language: TypeScript (strict mode)
+- Framework: Next.js 15 App Router
+- ORM: Prisma
+- Database: Supabase PostgreSQL (로컬·배포 단일 환경. Free Tier 500MB)
+- UI: Tailwind CSS + shadcn/ui
+- Email: Resend API (Free: 100통/일, 3,000통/월)
+- Deploy: Vercel (Git Push 자동 배포, CI/CD 설정 불요)
+- Testing: Phase-0 수동 테스트 체크리스트. Phase-1a+ Playwright E2E
 
-## AI & Document Engine (Python)
-- Language: Python 3.10+
-- Framework: FastAPI
-- AI Orchestration: LangChain
-- Testing: Pytest
-- LLM Provider: Google Gemini (via Internal Gateway)
+## Phase-0 미사용 (향후 Phase)
+- AI/LLM: Vercel AI SDK + Google Gemini (Phase-3)
+- Blockchain: ethers.js + Solidity + Hardhat (Phase-2+)
+- External Sources: Etherscan Labels, MistTrack, OFAC SDN (Phase-1b)
+- KYC: 외부 KYC Provider (Phase-2)
+- Notification: Slack(Phase-1a), KakaoTalk(Phase-1b), SMS(Phase-1b)
+- Monitoring: PagerDuty (Phase-1b)
+- RPC: Alchemy (Phase-2)
 
-## Infrastructure & Tools
-- Containerization: Docker, Docker Compose
-- API Documentation: Swagger/OpenAPI 3.0
-- Version Control: Git
+## Phase-0 명시적 배제
+- Java, Spring Boot, Python, FastAPI — 사용하지 않음
+- MySQL, SQLite — 사용하지 않음 (PostgreSQL 단일)
+- Docker, Redis, Kafka — 사용하지 않음
+- OAuth2, JWT, RBAC — 사용하지 않음
+- Micro-Service Architecture — 사용하지 않음
 
 ## See also:
 - [003-development-guidelines.md](003-development-guidelines.md) for usage guidelines
-- [301-spring-boot-java-rules.md](301-spring-boot-java-rules.md) for Java/Spring rules
-- [302-python-fastapi-rules.md](302-python-fastapi-rules.md) for Python/FastAPI rules
-- [303-database-mysql-jpa-rules.md](303-database-mysql-jpa-rules.md) for Database rules
-- [304-api-rest-design-rules.md](304-api-rest-design-rules.md) for API standards

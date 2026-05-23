@@ -1,0 +1,35 @@
+---
+description: Tailwind CSS + shadcn/ui component usage guidelines for Phase-0
+globs: "**/*.tsx, **/*.css"
+alwaysApply: false
+---
+# Tailwind CSS & shadcn/ui Guidelines (Phase-0)
+
+## Setup
+- Tailwind CSS: `tailwind.config.ts` + `app/globals.css`
+- shadcn/ui: `components.json` + `components/ui/`
+- 설치: `npx shadcn@latest add <component-name>`
+
+## Phase-0 Page → Component Mapping
+
+| 페이지 | shadcn/ui 컴포넌트 |
+|---|---|
+| fraud-lookup (조회) | Input, Select, Button, Card, Badge, Alert |
+| fraud-lookup (신고) | Textarea, Input, Button, Dialog, Toast |
+| safe-name (등록) | Input, Select, Button, Toast |
+| safe-name (리졸브) | Input, Button, Card, Badge, Alert |
+| safe-name (이체) | Input, Button, Card, Alert, Toast |
+| approval (대시보드) | Table, Button, Badge, Dialog, Textarea, Toast |
+| auth/verify | Input, Button, InputOTP, Toast |
+| 공통 layout | Tabs, NavigationMenu, Separator |
+
+## Styling Rules
+- shadcn/ui 컴포넌트 우선 사용. 커스텀 CSS 최소화
+- 색상: Tailwind 유틸리티 클래스 (custom color는 `tailwind.config.ts`)
+- 반응형: `sm:`, `md:`, `lg:` breakpoints
+- Dark mode: Phase-0에서는 선택사항
+
+## Component Organization
+- `components/ui/`: shadcn/ui 자동 생성 파일 (수동 수정 최소화)
+- `components/shared/`: 프로젝트 전용 공유 컴포넌트
+- 페이지별 로컬 컴포넌트는 페이지 파일과 같은 디렉토리에 배치

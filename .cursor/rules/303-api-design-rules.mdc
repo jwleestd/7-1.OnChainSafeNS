@@ -1,0 +1,59 @@
+---
+description: Next.js App Router REST API design standards for Phase-0
+globs: "app/api/**/*.ts"
+alwaysApply: false
+---
+# API Design Guidelines (Phase-0 — Next.js Route Handlers)
+
+## Endpoint Convention
+- Base path: `/api/v1/`
+- Resources: Nouns (fraud, safename, resolve, transfer, admin, auth)
+- Methods: GET (조회), POST (생성/액션)
+
+## Phase-0 Endpoints (7개)
+| Endpoint | Method | 인증 |
+|---|---|---|
+| `/api/v1/fraud/lookup` | GET | Public |
+| `/api/v1/fraud/report` | POST | Email인증 |
+| `/api/v1/resolve` | GET | Public |
+| `/api/v1/safename/register` | POST | Email인증 |
+| `/api/v1/transfer/demo` | POST | Email인증 |
+| `/api/v1/admin/approve` | POST | Admin PW |
+| `/api/v1/auth/verify-email` | POST | Public |
+
+## Response Format (권장)
+```json
+// Success
+{ "success": true, "data": { ... }, "meta": { "timestamp": "...", "request_id": "..." } }
+// Error
+{ "success": false, "error": { "code": "VALIDATION_ERROR", "message": "..." } }
+```
+
+## Error Codes
+| HTTP | code | 상황 |
+|---|---|---|
+| 400 | VALIDATION_ERROR | 입력값 유효성 실패 |
+| 401 | UNAUTHORIZED | Admin/이메일 미인증 |
+| 404 | NOT_FOUND | 리소스 미존재 |
+| 409 | CONFLICT | 중복 (이름, 신고) |
+| 410 | EXPIRED | 코드/이름 만료 |
+| 429 | RATE_LIMITED | 신고 제한 |
+| 500 | INTERNAL_ERROR | 서버 내부 오류 |
+
+## Route Handler Pattern
+```typescript
+// app/api/v1/fraud/lookup/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+
+export async function GET(req: NextRequest) {
+  const address = req.nextUrl.searchParams.get('address');
+  // 직접 Prisma 호출 (2계층)
+  const result = await prisma.fraudAddress.findFirst({ where: { address } });
+  return NextResponse.json({ success: true, data: result });
+}
+```
+
+## 에러 메시지 언어
+- 사용자 대면 메시지: **한국어** (PRD/SRS 정의 원문)
+- 내부 에러 코드: **영어 UPPER_SNAKE_CASE**

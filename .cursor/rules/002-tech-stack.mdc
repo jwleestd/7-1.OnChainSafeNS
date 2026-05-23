@@ -1,29 +1,23 @@
 ---
-description: 
+description: Phase-0 MVP technical stack — Next.js fullstack monolith
 globs: 
 alwaysApply: true
 ---
-# Technical Stack
+# Technical Stack (Phase-0 MVP)
 
-## Frontend
-- Framework: React
-- Styling: Tailwind CSS
+## Fullstack (Next.js 단일 풀스택 모노리스)
+- Language: TypeScript (strict mode)
+- Framework: Next.js 15 App Router
+- ORM: Prisma
+- Database: Supabase PostgreSQL (로컬·배포 단일. Free 500MB)
+- UI: Tailwind CSS + shadcn/ui
+- Email: Resend API (Free: 100통/일)
+- Deploy: Vercel (Git Push 자동 배포)
+- Testing: Phase-0 수동 테스트, Phase-1a+ Playwright
 
-## Backend
-- Core: Spring Boot
-- Template Engine: Thymeleaf
-- Caching: Redis
-- Message Queue: Apache Kafka
-
-## Authentication
-- OAuth2 Providers:
-  - Google
-  - KakaoTalk
-
-## External Services
-- AI/ML Integration:
-  - Hugging Face API
-  - OpenAI API
-
-## See also:
-- [003-development-guidelines.mdc](003-development-guidelines.mdc) for usage guidelines
+## Phase-0 명시적 배제
+- Java, Spring Boot, Python, FastAPI — 사용하지 않음
+- MySQL, SQLite — PostgreSQL 단일
+- Docker, Redis, Kafka — 사용하지 않음
+- OAuth2, JWT, RBAC — Admin PW + 이메일 인증만
+- Micro-Service — 단일 풀스택 모노리스

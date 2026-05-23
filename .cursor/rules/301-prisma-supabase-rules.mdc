@@ -1,0 +1,45 @@
+---
+description: Prisma ORM + Supabase PostgreSQL guidelines for Phase-0
+globs: "prisma/**/*"
+alwaysApply: false
+---
+# Prisma & Supabase PostgreSQL Guidelines (Phase-0)
+
+## Database Setup
+- **Provider:** PostgreSQL (Supabase Free Tier, 500MB)
+- **환경:** 로컬·배포 모두 Supabase 원격 DB (환경 분기 없음)
+- **Connection:**
+  - `DATABASE_URL`: Pooler (pgbouncer, port 6543) — 앱 연결용
+  - `DIRECT_URL`: Direct (port 5432) — 마이그레이션용
+
+## Schema Rules
+- PK: `@id @default(uuid())` — UUID v4
+- DateTime: `@default(now())` — TIMESTAMPTZ 자동 변환
+- Unique: `@@unique` — human_name, email 등
+- Index: `@@index` — 조회 빈도 높은 필드 (address 등)
+- JSON: PostgreSQL 네이티브 `Json` 타입 직접 사용
+
+## PrismaClient Singleton
+```typescript
+// lib/prisma.ts
+import { PrismaClient } from '@prisma/client';
+
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
+export const prisma = globalForPrisma.prisma || new PrismaClient();
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+```
+
+## Migration & Seed
+```bash
+npx prisma db push        # 스키마 동기화 (Phase-0 사용)
+npx prisma db seed         # 시드 삽입 (faker 활용)
+npx prisma generate        # Client 재생성
+npx prisma studio          # DB 브라우저
+```
+- Phase-0: `db push` 사용 (migrate는 Phase-1a+)
+- Seed: `@faker-js/faker`로 FRAUD_ADDRESS 30건 자동 생성
+
+## Naming Convention
+- **Tables:** PascalCase (Prisma model)
+- **Columns:** snake_case
+- **Relations:** camelCase (Prisma relation fields)
